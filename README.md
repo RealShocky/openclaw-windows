@@ -4,6 +4,14 @@
 
 ![OpenClaw GUI](https://img.shields.io/badge/Platform-Windows-blue) ![.NET](https://img.shields.io/badge/.NET-9.0-purple) ![WPF](https://img.shields.io/badge/UI-WPF-green) ![Version](https://img.shields.io/badge/Version-0.5.0-green)
 
+## 📥 Download
+
+**[⬇️ Download OpenClawGUI v0.5.0](https://github.com/RealShocky/openclaw-windows/releases/tag/v0.5.0)** - Self-contained executable (no .NET install required)
+
+1. Download `OpenClawGUI-v0.5.0-win-x64.zip`
+2. Extract to any folder
+3. Run `OpenClawGUI.exe`
+
 ## ✨ Features
 
 ### Core Features
@@ -201,5 +209,3 @@ MIT License - Same as OpenClaw
 ---
 
 **Made with 🦞 for the OpenClaw community**
-
-*AI-assisted development with Claude/Cascade*
