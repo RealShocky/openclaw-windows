@@ -8,9 +8,13 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
+using Hardcodet.Wpf.TaskbarNotification;
+using Microsoft.Toolkit.Uwp.Notifications;
 using Newtonsoft.Json.Linq;
 using Path = System.IO.Path;
 using File = System.IO.File;
+using Color = System.Windows.Media.Color;
+using ColorConverter = System.Windows.Media.ColorConverter;
 
 namespace OpenClawGUI;
 
@@ -35,6 +39,7 @@ public partial class MainWindow : Window
     private string _gatewayUrl = "http://127.0.0.1:18789";
     private string _authToken = "";
     private string _pnpmPath = @"C:\Users\markv\AppData\Roaming\npm\pnpm.cmd";
+    private TaskbarIcon? _trayIcon;
 
     public MainWindow()
     {
@@ -44,6 +49,7 @@ public partial class MainWindow : Window
         _openClawPath = @"P:\jarvis\openclaw";
         
         LoadConfiguration();
+        InitializeSystemTray();
         _ = CheckGatewayStatusAsync().ContinueWith(task =>
         {
             if (task.IsFaulted)
@@ -58,6 +64,76 @@ public partial class MainWindow : Window
         
         AddSystemMessage("Welcome to OpenClaw! 🦞");
         AddSystemMessage("Click '▶ START' to launch the gateway.");
+    }
+
+    private void InitializeSystemTray()
+    {
+        var contextMenu = new System.Windows.Controls.ContextMenu();
+        
+        var showItem = new System.Windows.Controls.MenuItem { Header = "Show OpenClaw" };
+        showItem.Click += (s, e) => { Show(); WindowState = WindowState.Normal; Activate(); };
+        contextMenu.Items.Add(showItem);
+        
+        contextMenu.Items.Add(new System.Windows.Controls.Separator());
+        
+        var startGatewayItem = new System.Windows.Controls.MenuItem { Header = "▶ Start Gateway" };
+        startGatewayItem.Click += StartGateway_Click;
+        contextMenu.Items.Add(startGatewayItem);
+        
+        var stopGatewayItem = new System.Windows.Controls.MenuItem { Header = "⏹ Stop Gateway" };
+        stopGatewayItem.Click += StopGateway_Click;
+        contextMenu.Items.Add(stopGatewayItem);
+        
+        var statusItem = new System.Windows.Controls.MenuItem { Header = "🔄 Check Status" };
+        statusItem.Click += CheckStatus_Click;
+        contextMenu.Items.Add(statusItem);
+        
+        contextMenu.Items.Add(new System.Windows.Controls.Separator());
+        
+        var webUiItem = new System.Windows.Controls.MenuItem { Header = "🌐 Open Web UI" };
+        webUiItem.Click += OpenWebUI_Click;
+        contextMenu.Items.Add(webUiItem);
+        
+        var configItem = new System.Windows.Controls.MenuItem { Header = "📂 Open Config" };
+        configItem.Click += OpenConfig_Click;
+        contextMenu.Items.Add(configItem);
+        
+        contextMenu.Items.Add(new System.Windows.Controls.Separator());
+        
+        var exitItem = new System.Windows.Controls.MenuItem { Header = "Exit" };
+        exitItem.Click += (s, e) => { _trayIcon?.Dispose(); Application.Current.Shutdown(); };
+        contextMenu.Items.Add(exitItem);
+
+        _trayIcon = new TaskbarIcon
+        {
+            ToolTipText = "OpenClaw Windows GUI",
+            ContextMenu = contextMenu,
+            Visibility = Visibility.Visible
+        };
+        
+        // Use default application icon
+        _trayIcon.Icon = System.Drawing.Icon.ExtractAssociatedIcon(System.Reflection.Assembly.GetExecutingAssembly().Location);
+        
+        _trayIcon.TrayMouseDoubleClick += (s, e) => { Show(); WindowState = WindowState.Normal; Activate(); };
+    }
+
+    protected override void OnStateChanged(EventArgs e)
+    {
+        base.OnStateChanged(e);
+        if (WindowState == WindowState.Minimized)
+        {
+            Hide();
+            ShowNotification("OpenClaw Minimized", "OpenClaw is running in the system tray.");
+        }
+    }
+
+    public void ShowNotification(string title, string message)
+    {
+        try
+        {
+            _trayIcon?.ShowBalloonTip(title, message, BalloonIcon.Info);
+        }
+        catch { }
     }
 
     private void LoadConfiguration()
@@ -765,6 +841,8 @@ public partial class MainWindow : Window
     protected override void OnClosed(EventArgs e)
     {
         base.OnClosed(e);
+        
+        _trayIcon?.Dispose();
         
         if (_gatewayProcess != null && !_gatewayProcess.HasExited)
         {

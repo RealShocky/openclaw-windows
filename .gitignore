@@ -2,6 +2,8 @@
 bin/
 obj/
 out/
+publish/
+*.zip
 
 # Visual Studio
 .vs/
