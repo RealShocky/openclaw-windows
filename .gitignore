@@ -5,6 +5,10 @@ out/
 publish/
 *.zip
 
+# Development docs (not needed in repo)
+ENHANCED_GUI_STATUS.md
+THEME_GUIDE.md
+
 # Visual Studio
 .vs/
 *.user
