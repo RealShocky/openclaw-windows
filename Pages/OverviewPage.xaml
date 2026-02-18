@@ -1,0 +1,135 @@
+<UserControl x:Class="OpenClawGUI.Pages.OverviewPage"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:ui="http://schemas.modernwpf.com/2019"
+             Background="#0D1117"
+             Loaded="Page_Loaded">
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <StackPanel Margin="20">
+            <TextBlock Text="OVERVIEW" FontSize="24" FontWeight="Bold" Foreground="#E6EDF3" Margin="0,0,0,5"/>
+            <TextBlock Text="System dashboard and health status" FontSize="14" Foreground="#7D8590" Margin="0,0,0,25"/>
+
+            <!-- Status Cards Row -->
+            <WrapPanel Margin="0,0,0,20">
+                <!-- Gateway Status -->
+                <Border Background="#161B22" BorderBrush="#30363D" BorderThickness="1" CornerRadius="8" Padding="20" Margin="0,0,15,15" Width="280">
+                    <StackPanel>
+                        <TextBlock Text="🌐 GATEWAY" FontSize="12" FontWeight="Bold" Foreground="#7D8590" Margin="0,0,0,10"/>
+                        <TextBlock x:Name="GatewayStatus" Text="Checking..." FontSize="28" FontWeight="Bold" Foreground="#58A6FF"/>
+                        <TextBlock x:Name="GatewayUrl" Text="http://127.0.0.1:18789" FontSize="12" Foreground="#7D8590" Margin="0,5,0,0"/>
+                    </StackPanel>
+                </Border>
+
+                <!-- Ollama Status -->
+                <Border Background="#161B22" BorderBrush="#30363D" BorderThickness="1" CornerRadius="8" Padding="20" Margin="0,0,15,15" Width="280">
+                    <StackPanel>
+                        <TextBlock Text="🦙 OLLAMA" FontSize="12" FontWeight="Bold" Foreground="#7D8590" Margin="0,0,0,10"/>
+                        <TextBlock x:Name="OllamaStatus" Text="Checking..." FontSize="28" FontWeight="Bold" Foreground="#58A6FF"/>
+                        <TextBlock x:Name="OllamaModels" Text="0 models" FontSize="12" Foreground="#7D8590" Margin="0,5,0,0"/>
+                    </StackPanel>
+                </Border>
+
+                <!-- LMStudio Status -->
+                <Border Background="#161B22" BorderBrush="#30363D" BorderThickness="1" CornerRadius="8" Padding="20" Margin="0,0,15,15" Width="280">
+                    <StackPanel>
+                        <TextBlock Text="🧠 LMSTUDIO" FontSize="12" FontWeight="Bold" Foreground="#7D8590" Margin="0,0,0,10"/>
+                        <TextBlock x:Name="LMStudioStatus" Text="Checking..." FontSize="28" FontWeight="Bold" Foreground="#58A6FF"/>
+                        <TextBlock x:Name="LMStudioModels" Text="0 models" FontSize="12" Foreground="#7D8590" Margin="0,5,0,0"/>
+                    </StackPanel>
+                </Border>
+
+                <!-- Active Sessions -->
+                <Border Background="#161B22" BorderBrush="#30363D" BorderThickness="1" CornerRadius="8" Padding="20" Margin="0,0,15,15" Width="280">
+                    <StackPanel>
+                        <TextBlock Text="💬 SESSIONS" FontSize="12" FontWeight="Bold" Foreground="#7D8590" Margin="0,0,0,10"/>
+                        <TextBlock x:Name="SessionCount" Text="1" FontSize="28" FontWeight="Bold" Foreground="#238636"/>
+                        <TextBlock Text="Active sessions" FontSize="12" Foreground="#7D8590" Margin="0,5,0,0"/>
+                    </StackPanel>
+                </Border>
+            </WrapPanel>
+
+            <!-- Quick Actions -->
+            <Border Background="#161B22" BorderBrush="#30363D" BorderThickness="1" CornerRadius="8" Padding="20" Margin="0,0,0,20">
+                <StackPanel>
+                    <TextBlock Text="⚡ QUICK ACTIONS" FontSize="14" FontWeight="Bold" Foreground="#58A6FF" Margin="0,0,0,15"/>
+                    <WrapPanel>
+                        <Button Content="🔄 Refresh Status" Click="RefreshStatus_Click"
+                                Background="#238636" Foreground="White" BorderThickness="0"
+                                Padding="15,10" Margin="0,0,10,10" FontWeight="SemiBold"/>
+                        <Button Content="📝 Open Config" Click="OpenConfig_Click"
+                                Background="#21262D" Foreground="#C9D1D9" BorderBrush="#30363D" BorderThickness="1"
+                                Padding="15,10" Margin="0,0,10,10" FontWeight="SemiBold"/>
+                        <Button Content="🌐 Open Web UI" Click="OpenWebUI_Click"
+                                Background="#21262D" Foreground="#C9D1D9" BorderBrush="#30363D" BorderThickness="1"
+                                Padding="15,10" Margin="0,0,10,10" FontWeight="SemiBold"/>
+                        <Button Content="📂 Open Data Folder" Click="OpenDataFolder_Click"
+                                Background="#21262D" Foreground="#C9D1D9" BorderBrush="#30363D" BorderThickness="1"
+                                Padding="15,10" Margin="0,0,10,10" FontWeight="SemiBold"/>
+                    </WrapPanel>
+                </StackPanel>
+            </Border>
+
+            <!-- System Info -->
+            <Border Background="#161B22" BorderBrush="#30363D" BorderThickness="1" CornerRadius="8" Padding="20" Margin="0,0,0,20">
+                <StackPanel>
+                    <TextBlock Text="ℹ️ SYSTEM INFORMATION" FontSize="14" FontWeight="Bold" Foreground="#58A6FF" Margin="0,0,0,15"/>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="200"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+
+                        <TextBlock Grid.Row="0" Grid.Column="0" Text="OpenClaw Path:" Foreground="#7D8590" Margin="0,0,0,8"/>
+                        <TextBlock Grid.Row="0" Grid.Column="1" x:Name="OpenClawPath" Text="P:\jarvis\openclaw" Foreground="#E6EDF3" Margin="0,0,0,8"/>
+
+                        <TextBlock Grid.Row="1" Grid.Column="0" Text="Config Path:" Foreground="#7D8590" Margin="0,0,0,8"/>
+                        <TextBlock Grid.Row="1" Grid.Column="1" x:Name="ConfigPath" Text="~/.openclaw/openclaw.json" Foreground="#E6EDF3" Margin="0,0,0,8"/>
+
+                        <TextBlock Grid.Row="2" Grid.Column="0" Text="Primary Model:" Foreground="#7D8590" Margin="0,0,0,8"/>
+                        <TextBlock Grid.Row="2" Grid.Column="1" x:Name="PrimaryModel" Text="Loading..." Foreground="#238636" FontWeight="SemiBold" Margin="0,0,0,8"/>
+
+                        <TextBlock Grid.Row="3" Grid.Column="0" Text="Fallback Model:" Foreground="#7D8590" Margin="0,0,0,8"/>
+                        <TextBlock Grid.Row="3" Grid.Column="1" x:Name="FallbackModel" Text="Loading..." Foreground="#1F6FEB" Margin="0,0,0,8"/>
+
+                        <TextBlock Grid.Row="4" Grid.Column="0" Text="Gateway Port:" Foreground="#7D8590" Margin="0,0,0,8"/>
+                        <TextBlock Grid.Row="4" Grid.Column="1" x:Name="GatewayPort" Text="18789" Foreground="#E6EDF3" Margin="0,0,0,8"/>
+                    </Grid>
+                </StackPanel>
+            </Border>
+
+            <!-- Recent Activity -->
+            <Border Background="#161B22" BorderBrush="#30363D" BorderThickness="1" CornerRadius="8" Padding="20">
+                <StackPanel>
+                    <TextBlock Text="📋 RECENT ACTIVITY" FontSize="14" FontWeight="Bold" Foreground="#58A6FF" Margin="0,0,0,15"/>
+                    <ItemsControl x:Name="RecentActivity">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Border Background="#0D1117" CornerRadius="4" Padding="10" Margin="0,0,0,8">
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto"/>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Grid.Column="0" Text="{Binding Icon}" FontSize="16" Margin="0,0,10,0"/>
+                                        <TextBlock Grid.Column="1" Text="{Binding Message}" Foreground="#E6EDF3"/>
+                                        <TextBlock Grid.Column="2" Text="{Binding Time}" Foreground="#7D8590" FontSize="11"/>
+                                    </Grid>
+                                </Border>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                    <TextBlock x:Name="NoActivityText" Text="No recent activity" Foreground="#7D8590" 
+                               HorizontalAlignment="Center" Margin="0,10,0,0"/>
+                </StackPanel>
+            </Border>
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

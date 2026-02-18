@@ -1,0 +1,135 @@
+<UserControl x:Class="OpenClawGUI.Pages.DebugPage"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:ui="http://schemas.modernwpf.com/2019"
+             Background="#0D1117"
+             Loaded="Page_Loaded">
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <StackPanel Margin="20">
+            <TextBlock Text="DEBUG" FontSize="24" FontWeight="Bold" Foreground="#E6EDF3" Margin="0,0,0,5"/>
+            <TextBlock Text="System diagnostics and debugging tools" FontSize="14" Foreground="#7D8590" Margin="0,0,0,25"/>
+
+            <!-- System Info -->
+            <Border Background="#161B22" BorderBrush="#30363D" BorderThickness="1" CornerRadius="8" Padding="20" Margin="0,0,0,20">
+                <StackPanel>
+                    <TextBlock Text="🖥️ SYSTEM INFORMATION" FontSize="14" FontWeight="Bold" Foreground="#58A6FF" Margin="0,0,0,15"/>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="200"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+
+                        <TextBlock Grid.Row="0" Grid.Column="0" Text="OS:" Foreground="#7D8590" Margin="0,0,0,8"/>
+                        <TextBlock Grid.Row="0" Grid.Column="1" x:Name="OSInfo" Text="Loading..." Foreground="#E6EDF3" Margin="0,0,0,8"/>
+
+                        <TextBlock Grid.Row="1" Grid.Column="0" Text="Machine Name:" Foreground="#7D8590" Margin="0,0,0,8"/>
+                        <TextBlock Grid.Row="1" Grid.Column="1" x:Name="MachineInfo" Text="Loading..." Foreground="#E6EDF3" Margin="0,0,0,8"/>
+
+                        <TextBlock Grid.Row="2" Grid.Column="0" Text=".NET Version:" Foreground="#7D8590" Margin="0,0,0,8"/>
+                        <TextBlock Grid.Row="2" Grid.Column="1" x:Name="DotNetInfo" Text="Loading..." Foreground="#E6EDF3" Margin="0,0,0,8"/>
+
+                        <TextBlock Grid.Row="3" Grid.Column="0" Text="Process Memory:" Foreground="#7D8590" Margin="0,0,0,8"/>
+                        <TextBlock Grid.Row="3" Grid.Column="1" x:Name="MemoryInfo" Text="Loading..." Foreground="#E6EDF3" Margin="0,0,0,8"/>
+
+                        <TextBlock Grid.Row="4" Grid.Column="0" Text="GUI Version:" Foreground="#7D8590" Margin="0,0,0,8"/>
+                        <TextBlock Grid.Row="4" Grid.Column="1" Text="v0.3.0" Foreground="#238636" FontWeight="SemiBold" Margin="0,0,0,8"/>
+
+                        <TextBlock Grid.Row="5" Grid.Column="0" Text="Uptime:" Foreground="#7D8590"/>
+                        <TextBlock Grid.Row="5" Grid.Column="1" x:Name="UptimeInfo" Text="Loading..." Foreground="#E6EDF3"/>
+                    </Grid>
+                </StackPanel>
+            </Border>
+
+            <!-- Connection Status -->
+            <Border Background="#161B22" BorderBrush="#30363D" BorderThickness="1" CornerRadius="8" Padding="20" Margin="0,0,0,20">
+                <StackPanel>
+                    <TextBlock Text="🔌 CONNECTION STATUS" FontSize="14" FontWeight="Bold" Foreground="#58A6FF" Margin="0,0,0,15"/>
+                    <ItemsControl x:Name="ConnectionsList">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Grid Margin="0,0,0,10">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="200"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Grid.Column="0" Text="{Binding Name}" Foreground="#E6EDF3"/>
+                                    <Border Grid.Column="1" Background="{Binding StatusColor}" CornerRadius="4" Padding="8,2" Margin="0,0,10,0">
+                                        <TextBlock Text="{Binding Status}" Foreground="White" FontSize="10" FontWeight="Bold"/>
+                                    </Border>
+                                    <TextBlock Grid.Column="2" Text="{Binding Url}" Foreground="#7D8590" FontFamily="Consolas" FontSize="12"/>
+                                </Grid>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                    <Button Content="🔄 Refresh Connections" Click="RefreshConnections_Click"
+                            Background="#21262D" Foreground="#C9D1D9" BorderBrush="#30363D" BorderThickness="1"
+                            Padding="12,8" Margin="0,10,0,0" FontWeight="SemiBold"/>
+                </StackPanel>
+            </Border>
+
+            <!-- Configuration -->
+            <Border Background="#161B22" BorderBrush="#30363D" BorderThickness="1" CornerRadius="8" Padding="20" Margin="0,0,0,20">
+                <StackPanel>
+                    <TextBlock Text="⚙️ CONFIGURATION" FontSize="14" FontWeight="Bold" Foreground="#58A6FF" Margin="0,0,0,15"/>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="200"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+
+                        <TextBlock Grid.Row="0" Grid.Column="0" Text="Config Path:" Foreground="#7D8590" Margin="0,0,0,8"/>
+                        <TextBlock Grid.Row="0" Grid.Column="1" x:Name="ConfigPathInfo" Text="Loading..." Foreground="#58A6FF" FontFamily="Consolas" FontSize="12" Margin="0,0,0,8"/>
+
+                        <TextBlock Grid.Row="1" Grid.Column="0" Text="OpenClaw Path:" Foreground="#7D8590" Margin="0,0,0,8"/>
+                        <TextBlock Grid.Row="1" Grid.Column="1" x:Name="OpenClawPathInfo" Text="Loading..." Foreground="#58A6FF" FontFamily="Consolas" FontSize="12" Margin="0,0,0,8"/>
+
+                        <TextBlock Grid.Row="2" Grid.Column="0" Text="pnpm Path:" Foreground="#7D8590" Margin="0,0,0,8"/>
+                        <TextBlock Grid.Row="2" Grid.Column="1" x:Name="PnpmPathInfo" Text="Loading..." Foreground="#58A6FF" FontFamily="Consolas" FontSize="12" Margin="0,0,0,8"/>
+
+                        <TextBlock Grid.Row="3" Grid.Column="0" Text="Gateway URL:" Foreground="#7D8590"/>
+                        <TextBlock Grid.Row="3" Grid.Column="1" x:Name="GatewayUrlInfo" Text="Loading..." Foreground="#58A6FF" FontFamily="Consolas" FontSize="12"/>
+                    </Grid>
+                </StackPanel>
+            </Border>
+
+            <!-- Debug Actions -->
+            <Border Background="#161B22" BorderBrush="#30363D" BorderThickness="1" CornerRadius="8" Padding="20">
+                <StackPanel>
+                    <TextBlock Text="🛠️ DEBUG ACTIONS" FontSize="14" FontWeight="Bold" Foreground="#58A6FF" Margin="0,0,0,15"/>
+                    <WrapPanel>
+                        <Button Content="📋 Copy Debug Info" Click="CopyDebugInfo_Click"
+                                Background="#21262D" Foreground="#C9D1D9" BorderBrush="#30363D" BorderThickness="1"
+                                Padding="15,10" Margin="0,0,10,10" FontWeight="SemiBold"/>
+                        <Button Content="🗑️ Clear Cache" Click="ClearCache_Click"
+                                Background="#21262D" Foreground="#C9D1D9" BorderBrush="#30363D" BorderThickness="1"
+                                Padding="15,10" Margin="0,0,10,10" FontWeight="SemiBold"/>
+                        <Button Content="📂 Open Data Folder" Click="OpenDataFolder_Click"
+                                Background="#21262D" Foreground="#C9D1D9" BorderBrush="#30363D" BorderThickness="1"
+                                Padding="15,10" Margin="0,0,10,10" FontWeight="SemiBold"/>
+                        <Button Content="📝 Open Logs Folder" Click="OpenLogsFolder_Click"
+                                Background="#21262D" Foreground="#C9D1D9" BorderBrush="#30363D" BorderThickness="1"
+                                Padding="15,10" Margin="0,0,10,10" FontWeight="SemiBold"/>
+                        <Button Content="🔄 Force GC" Click="ForceGC_Click"
+                                Background="#21262D" Foreground="#C9D1D9" BorderBrush="#30363D" BorderThickness="1"
+                                Padding="15,10" Margin="0,0,10,10" FontWeight="SemiBold"/>
+                    </WrapPanel>
+                </StackPanel>
+            </Border>
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

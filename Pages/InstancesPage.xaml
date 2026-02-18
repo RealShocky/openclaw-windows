@@ -1,0 +1,141 @@
+<UserControl x:Class="OpenClawGUI.Pages.InstancesPage"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:ui="http://schemas.modernwpf.com/2019"
+             Background="#0D1117"
+             Loaded="Page_Loaded">
+    <Grid Margin="20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <StackPanel Grid.Row="0" Margin="0,0,0,20">
+            <TextBlock Text="CONNECTED INSTANCES" FontSize="24" FontWeight="Bold" Foreground="#E6EDF3" Margin="0,0,0,5"/>
+            <TextBlock Text="View all connected OpenClaw clients" FontSize="14" Foreground="#7D8590" Margin="0,0,0,20"/>
+            
+            <StackPanel Orientation="Horizontal">
+                <Button Content="🔄 REFRESH" Click="Refresh_Click"
+                        Background="#238636" Foreground="White" BorderThickness="0"
+                        Padding="15,10" Margin="0,0,10,0" FontWeight="SemiBold" FontSize="13"/>
+                <TextBlock x:Name="ConnectionCount" Text="0 instances connected" Foreground="#7D8590" 
+                           VerticalAlignment="Center" FontSize="14"/>
+            </StackPanel>
+        </StackPanel>
+
+        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
+            <StackPanel>
+                <!-- This Instance -->
+                <Border Background="#161B22" BorderBrush="#238636" BorderThickness="2" CornerRadius="8" Padding="20" Margin="0,0,0,20">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        
+                        <TextBlock Grid.Column="0" Text="🖥️" FontSize="40" Margin="0,0,20,0" VerticalAlignment="Center"/>
+                        
+                        <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                            <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
+                                <TextBlock Text="Windows GUI" FontSize="18" FontWeight="Bold" Foreground="#E6EDF3"/>
+                                <Border Background="#238636" CornerRadius="4" Padding="8,2" Margin="10,0,0,0" VerticalAlignment="Center">
+                                    <TextBlock Text="THIS INSTANCE" Foreground="White" FontSize="10" FontWeight="Bold"/>
+                                </Border>
+                            </StackPanel>
+                            <TextBlock Text="OpenClawGUI v0.3.0 • Windows 11" Foreground="#7D8590" FontSize="13"/>
+                            <TextBlock x:Name="ThisInstanceId" Text="Instance ID: gui-windows-xxxxx" Foreground="#58A6FF" FontSize="12" FontFamily="Consolas" Margin="0,5,0,0"/>
+                        </StackPanel>
+                        
+                        <StackPanel Grid.Column="2" VerticalAlignment="Center">
+                            <TextBlock Text="Connected" Foreground="#238636" FontWeight="SemiBold" HorizontalAlignment="Right"/>
+                            <TextBlock x:Name="ConnectionTime" Text="Since startup" Foreground="#7D8590" FontSize="12" HorizontalAlignment="Right"/>
+                        </StackPanel>
+                    </Grid>
+                </Border>
+
+                <!-- Other Instances -->
+                <TextBlock Text="OTHER INSTANCES" FontSize="14" FontWeight="Bold" Foreground="#58A6FF" Margin="0,0,0,15"/>
+                
+                <ItemsControl x:Name="InstancesList">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Border Background="#161B22" BorderBrush="#30363D" BorderThickness="1" CornerRadius="8" Padding="20" Margin="0,0,0,15">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+                                    
+                                    <TextBlock Grid.Column="0" Text="{Binding Icon}" FontSize="32" Margin="0,0,15,0" VerticalAlignment="Center"/>
+                                    
+                                    <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                                        <TextBlock Text="{Binding Name}" FontSize="16" FontWeight="SemiBold" Foreground="#E6EDF3"/>
+                                        <TextBlock Text="{Binding Details}" Foreground="#7D8590" FontSize="12"/>
+                                        <TextBlock Text="{Binding InstanceId}" Foreground="#58A6FF" FontSize="11" FontFamily="Consolas" Margin="0,3,0,0"/>
+                                    </StackPanel>
+                                    
+                                    <StackPanel Grid.Column="2" VerticalAlignment="Center">
+                                        <Border Background="{Binding StatusColor}" CornerRadius="4" Padding="10,4" HorizontalAlignment="Right" Margin="0,0,0,5">
+                                            <TextBlock Text="{Binding Status}" Foreground="White" FontSize="11" FontWeight="SemiBold"/>
+                                        </Border>
+                                        <TextBlock Text="{Binding LastSeen}" Foreground="#7D8590" FontSize="11" HorizontalAlignment="Right"/>
+                                    </StackPanel>
+                                </Grid>
+                            </Border>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+
+                <TextBlock x:Name="NoOtherInstances" Text="No other instances connected" Foreground="#7D8590" 
+                           HorizontalAlignment="Center" Margin="0,20,0,0"/>
+
+                <!-- Instance Types Info -->
+                <Border Background="#161B22" BorderBrush="#30363D" BorderThickness="1" CornerRadius="8" Padding="20" Margin="0,30,0,0">
+                    <StackPanel>
+                        <TextBlock Text="📱 SUPPORTED CLIENTS" FontSize="14" FontWeight="Bold" Foreground="#58A6FF" Margin="0,0,0,15"/>
+                        <WrapPanel>
+                            <Border Background="#21262D" CornerRadius="6" Padding="15,10" Margin="0,0,10,10">
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Text="🖥️" FontSize="20" Margin="0,0,8,0"/>
+                                    <TextBlock Text="Windows GUI" Foreground="#E6EDF3" VerticalAlignment="Center"/>
+                                </StackPanel>
+                            </Border>
+                            <Border Background="#21262D" CornerRadius="6" Padding="15,10" Margin="0,0,10,10">
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Text="🍎" FontSize="20" Margin="0,0,8,0"/>
+                                    <TextBlock Text="macOS" Foreground="#E6EDF3" VerticalAlignment="Center"/>
+                                </StackPanel>
+                            </Border>
+                            <Border Background="#21262D" CornerRadius="6" Padding="15,10" Margin="0,0,10,10">
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Text="📱" FontSize="20" Margin="0,0,8,0"/>
+                                    <TextBlock Text="iOS" Foreground="#E6EDF3" VerticalAlignment="Center"/>
+                                </StackPanel>
+                            </Border>
+                            <Border Background="#21262D" CornerRadius="6" Padding="15,10" Margin="0,0,10,10">
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Text="🤖" FontSize="20" Margin="0,0,8,0"/>
+                                    <TextBlock Text="Android" Foreground="#E6EDF3" VerticalAlignment="Center"/>
+                                </StackPanel>
+                            </Border>
+                            <Border Background="#21262D" CornerRadius="6" Padding="15,10" Margin="0,0,10,10">
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Text="🌐" FontSize="20" Margin="0,0,8,0"/>
+                                    <TextBlock Text="Web UI" Foreground="#E6EDF3" VerticalAlignment="Center"/>
+                                </StackPanel>
+                            </Border>
+                            <Border Background="#21262D" CornerRadius="6" Padding="15,10" Margin="0,0,10,10">
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Text="💻" FontSize="20" Margin="0,0,8,0"/>
+                                    <TextBlock Text="CLI" Foreground="#E6EDF3" VerticalAlignment="Center"/>
+                                </StackPanel>
+                            </Border>
+                        </WrapPanel>
+                    </StackPanel>
+                </Border>
+            </StackPanel>
+        </ScrollViewer>
+    </Grid>
+</UserControl>

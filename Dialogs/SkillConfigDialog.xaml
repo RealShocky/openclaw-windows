@@ -1,0 +1,259 @@
+<Window x:Class="OpenClawGUI.Dialogs.SkillConfigDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:ui="http://schemas.modernwpf.com/2019"
+        ui:WindowHelper.UseModernWindowStyle="True"
+        Title="Configure Skill" 
+        Height="600" Width="550"
+        WindowStartupLocation="CenterOwner"
+        Background="#0D1117"
+        ResizeMode="NoResize">
+    <Grid Margin="25">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- Header -->
+        <StackPanel Grid.Row="0" Margin="0,0,0,20">
+            <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+                <TextBlock x:Name="SkillIcon" Text="🔌" FontSize="32" Margin="0,0,15,0"/>
+                <StackPanel>
+                    <TextBlock x:Name="SkillTitle" Text="Configure MCP Tools" FontSize="20" FontWeight="Bold" Foreground="#E6EDF3"/>
+                    <TextBlock x:Name="SkillSubtitle" Text="Add external tool servers" FontSize="12" Foreground="#7D8590"/>
+                </StackPanel>
+            </StackPanel>
+        </StackPanel>
+
+        <!-- Form Fields -->
+        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
+            <StackPanel x:Name="FormFields">
+                
+                <!-- MCP Configuration -->
+                <StackPanel x:Name="McpFields">
+                    <TextBlock Text="Quick Add MCP Server" Foreground="#58A6FF" FontWeight="Bold" FontSize="14" Margin="0,0,0,10"/>
+                    
+                    <TextBlock Text="Select Template" Foreground="#E6EDF3" FontWeight="SemiBold" Margin="0,0,0,8"/>
+                    <ComboBox x:Name="McpTemplateCombo" SelectionChanged="McpTemplate_Changed"
+                              Background="#161B22" Foreground="#E6EDF3" BorderBrush="#30363D" Padding="10" Margin="0,0,0,15">
+                        <ComboBoxItem Content="-- Select a template --" IsSelected="True"/>
+                        <ComboBoxItem Content="📁 Filesystem - File access" Tag="filesystem"/>
+                        <ComboBoxItem Content="🐙 GitHub - Repository management" Tag="github"/>
+                        <ComboBoxItem Content="🗄️ SQLite - Database queries" Tag="sqlite"/>
+                        <ComboBoxItem Content="🐘 PostgreSQL - Database queries" Tag="postgres"/>
+                        <ComboBoxItem Content="📱 Slack - Workspace integration" Tag="slack"/>
+                        <ComboBoxItem Content="🔍 Brave Search - Web search" Tag="brave-search"/>
+                        <ComboBoxItem Content="🌐 Puppeteer - Browser automation" Tag="puppeteer"/>
+                        <ComboBoxItem Content="📝 Memory - Persistent storage" Tag="memory"/>
+                        <ComboBoxItem Content="⏰ Time - Date/time utilities" Tag="time"/>
+                        <ComboBoxItem Content="🔧 Custom - Manual configuration" Tag="custom"/>
+                    </ComboBox>
+
+                    <TextBlock Text="Server Name *" Foreground="#E6EDF3" FontWeight="SemiBold" Margin="0,0,0,8"/>
+                    <TextBox x:Name="McpServerName" 
+                             Background="#161B22" Foreground="#E6EDF3" BorderBrush="#30363D" 
+                             Padding="12" Margin="0,0,0,5"
+                             ui:ControlHelper.PlaceholderText="e.g., filesystem, github"/>
+                    <TextBlock Text="Unique identifier for this server" Foreground="#7D8590" FontSize="11" Margin="0,0,0,15"/>
+
+                    <TextBlock Text="Command *" Foreground="#E6EDF3" FontWeight="SemiBold" Margin="0,0,0,8"/>
+                    <TextBox x:Name="McpCommand" 
+                             Background="#161B22" Foreground="#E6EDF3" BorderBrush="#30363D" 
+                             Padding="12" Margin="0,0,0,5"
+                             ui:ControlHelper.PlaceholderText="npx"/>
+                    <TextBlock Text="Command to run (npx, node, python, etc.)" Foreground="#7D8590" FontSize="11" Margin="0,0,0,15"/>
+
+                    <TextBlock Text="Arguments" Foreground="#E6EDF3" FontWeight="SemiBold" Margin="0,0,0,8"/>
+                    <TextBox x:Name="McpArgs" 
+                             Background="#161B22" Foreground="#E6EDF3" BorderBrush="#30363D" 
+                             Padding="12" Margin="0,0,0,5"
+                             ui:ControlHelper.PlaceholderText="-y @modelcontextprotocol/server-filesystem"/>
+                    <TextBlock Text="Command arguments (space-separated)" Foreground="#7D8590" FontSize="11" Margin="0,0,0,15"/>
+
+                    <TextBlock Text="Environment Variables (Optional)" Foreground="#E6EDF3" FontWeight="SemiBold" Margin="0,0,0,8"/>
+                    <TextBox x:Name="McpEnvVars" 
+                             Background="#161B22" Foreground="#E6EDF3" BorderBrush="#30363D" 
+                             Padding="12" Height="60" AcceptsReturn="True" TextWrapping="Wrap" Margin="0,0,0,5"
+                             ui:ControlHelper.PlaceholderText="GITHUB_TOKEN=your-token&#x0a;API_KEY=your-key"/>
+                    <TextBlock Text="One per line: KEY=value" Foreground="#7D8590" FontSize="11" Margin="0,0,0,15"/>
+
+                    <!-- Current MCP Servers -->
+                    <Border Background="#161B22" BorderBrush="#30363D" BorderThickness="1" CornerRadius="6" Padding="15" Margin="0,10,0,0">
+                        <StackPanel>
+                            <TextBlock Text="📋 Current MCP Servers" Foreground="#58A6FF" FontWeight="SemiBold" Margin="0,0,0,10"/>
+                            <ItemsControl x:Name="CurrentMcpServers">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <Border Background="#0D1117" CornerRadius="4" Padding="10" Margin="0,0,0,5">
+                                            <Grid>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="*"/>
+                                                    <ColumnDefinition Width="Auto"/>
+                                                </Grid.ColumnDefinitions>
+                                                <StackPanel Grid.Column="0">
+                                                    <TextBlock Text="{Binding Name}" Foreground="#E6EDF3" FontWeight="SemiBold"/>
+                                                    <TextBlock Text="{Binding Command}" Foreground="#7D8590" FontSize="11"/>
+                                                </StackPanel>
+                                                <Button Grid.Column="1" Content="🗑️" Click="RemoveMcpServer_Click" Tag="{Binding Name}"
+                                                        Background="Transparent" Foreground="#DA3633" BorderThickness="0" Padding="5"/>
+                                            </Grid>
+                                        </Border>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                            <TextBlock x:Name="NoServersText" Text="No MCP servers configured" Foreground="#7D8590" FontStyle="Italic"/>
+                        </StackPanel>
+                    </Border>
+                </StackPanel>
+
+                <!-- Web Search Configuration -->
+                <StackPanel x:Name="WebSearchFields" Visibility="Collapsed">
+                    <TextBlock Text="Search Provider" Foreground="#E6EDF3" FontWeight="SemiBold" Margin="0,0,0,8"/>
+                    <ComboBox x:Name="SearchProviderCombo"
+                              Background="#161B22" Foreground="#E6EDF3" BorderBrush="#30363D" Padding="10" Margin="0,0,0,15">
+                        <ComboBoxItem Content="DuckDuckGo (No API key needed)" IsSelected="True" Tag="duckduckgo"/>
+                        <ComboBoxItem Content="Google Custom Search" Tag="google"/>
+                        <ComboBoxItem Content="Bing Search" Tag="bing"/>
+                        <ComboBoxItem Content="Brave Search" Tag="brave"/>
+                        <ComboBoxItem Content="SerpAPI" Tag="serpapi"/>
+                    </ComboBox>
+
+                    <TextBlock Text="API Key (if required)" Foreground="#E6EDF3" FontWeight="SemiBold" Margin="0,0,0,8"/>
+                    <TextBox x:Name="SearchApiKey" 
+                             Background="#161B22" Foreground="#E6EDF3" BorderBrush="#30363D" 
+                             Padding="12" Margin="0,0,0,5"
+                             ui:ControlHelper.PlaceholderText="Enter API key"/>
+                    <TextBlock Text="Not needed for DuckDuckGo" Foreground="#7D8590" FontSize="11" Margin="0,0,0,15"/>
+
+                    <TextBlock Text="Custom Search Engine ID (Google only)" Foreground="#E6EDF3" FontWeight="SemiBold" Margin="0,0,0,8"/>
+                    <TextBox x:Name="SearchEngineId" 
+                             Background="#161B22" Foreground="#E6EDF3" BorderBrush="#30363D" 
+                             Padding="12" Margin="0,0,0,15"
+                             ui:ControlHelper.PlaceholderText="cx=your-search-engine-id"/>
+                </StackPanel>
+
+                <!-- Image Generation Configuration -->
+                <StackPanel x:Name="ImageGenFields" Visibility="Collapsed">
+                    <TextBlock Text="Image Provider" Foreground="#E6EDF3" FontWeight="SemiBold" Margin="0,0,0,8"/>
+                    <ComboBox x:Name="ImageProviderCombo"
+                              Background="#161B22" Foreground="#E6EDF3" BorderBrush="#30363D" Padding="10" Margin="0,0,0,15">
+                        <ComboBoxItem Content="OpenAI DALL-E" IsSelected="True" Tag="openai"/>
+                        <ComboBoxItem Content="Stable Diffusion (Local)" Tag="sd-local"/>
+                        <ComboBoxItem Content="Stable Diffusion (API)" Tag="sd-api"/>
+                        <ComboBoxItem Content="Replicate" Tag="replicate"/>
+                        <ComboBoxItem Content="Midjourney (via API)" Tag="midjourney"/>
+                    </ComboBox>
+
+                    <TextBlock Text="API Key *" Foreground="#E6EDF3" FontWeight="SemiBold" Margin="0,0,0,8"/>
+                    <TextBox x:Name="ImageApiKey" 
+                             Background="#161B22" Foreground="#E6EDF3" BorderBrush="#30363D" 
+                             Padding="12" Margin="0,0,0,5"
+                             ui:ControlHelper.PlaceholderText="sk-..."/>
+                    <TextBlock Text="Your OpenAI or provider API key" Foreground="#7D8590" FontSize="11" Margin="0,0,0,15"/>
+
+                    <TextBlock Text="Model (Optional)" Foreground="#E6EDF3" FontWeight="SemiBold" Margin="0,0,0,8"/>
+                    <TextBox x:Name="ImageModel" 
+                             Background="#161B22" Foreground="#E6EDF3" BorderBrush="#30363D" 
+                             Padding="12" Margin="0,0,0,5"
+                             ui:ControlHelper.PlaceholderText="dall-e-3"/>
+                    <TextBlock Text="Default: dall-e-3 for OpenAI" Foreground="#7D8590" FontSize="11" Margin="0,0,0,15"/>
+
+                    <TextBlock Text="Default Size" Foreground="#E6EDF3" FontWeight="SemiBold" Margin="0,0,0,8"/>
+                    <ComboBox x:Name="ImageSizeCombo"
+                              Background="#161B22" Foreground="#E6EDF3" BorderBrush="#30363D" Padding="10" Margin="0,0,0,15">
+                        <ComboBoxItem Content="1024x1024" IsSelected="True"/>
+                        <ComboBoxItem Content="1792x1024 (Wide)"/>
+                        <ComboBoxItem Content="1024x1792 (Tall)"/>
+                        <ComboBoxItem Content="512x512"/>
+                    </ComboBox>
+                </StackPanel>
+
+                <!-- Audio/Speech Configuration -->
+                <StackPanel x:Name="AudioFields" Visibility="Collapsed">
+                    <TextBlock Text="SPEECH-TO-TEXT" Foreground="#58A6FF" FontWeight="Bold" FontSize="14" Margin="0,0,0,15"/>
+                    
+                    <TextBlock Text="STT Provider" Foreground="#E6EDF3" FontWeight="SemiBold" Margin="0,0,0,8"/>
+                    <ComboBox x:Name="SttProviderCombo"
+                              Background="#161B22" Foreground="#E6EDF3" BorderBrush="#30363D" Padding="10" Margin="0,0,0,15">
+                        <ComboBoxItem Content="OpenAI Whisper (API)" IsSelected="True" Tag="whisper-api"/>
+                        <ComboBoxItem Content="Whisper (Local)" Tag="whisper-local"/>
+                        <ComboBoxItem Content="Google Speech-to-Text" Tag="google"/>
+                        <ComboBoxItem Content="Azure Speech" Tag="azure"/>
+                    </ComboBox>
+
+                    <TextBlock Text="STT API Key" Foreground="#E6EDF3" FontWeight="SemiBold" Margin="0,0,0,8"/>
+                    <TextBox x:Name="SttApiKey" 
+                             Background="#161B22" Foreground="#E6EDF3" BorderBrush="#30363D" 
+                             Padding="12" Margin="0,0,0,20"
+                             ui:ControlHelper.PlaceholderText="API key for speech-to-text"/>
+
+                    <TextBlock Text="TEXT-TO-SPEECH" Foreground="#58A6FF" FontWeight="Bold" FontSize="14" Margin="0,0,0,15"/>
+                    
+                    <TextBlock Text="TTS Provider" Foreground="#E6EDF3" FontWeight="SemiBold" Margin="0,0,0,8"/>
+                    <ComboBox x:Name="TtsProviderCombo"
+                              Background="#161B22" Foreground="#E6EDF3" BorderBrush="#30363D" Padding="10" Margin="0,0,0,15">
+                        <ComboBoxItem Content="OpenAI TTS" IsSelected="True" Tag="openai"/>
+                        <ComboBoxItem Content="ElevenLabs" Tag="elevenlabs"/>
+                        <ComboBoxItem Content="Google TTS" Tag="google"/>
+                        <ComboBoxItem Content="Azure TTS" Tag="azure"/>
+                        <ComboBoxItem Content="System TTS (Free)" Tag="system"/>
+                    </ComboBox>
+
+                    <TextBlock Text="TTS API Key" Foreground="#E6EDF3" FontWeight="SemiBold" Margin="0,0,0,8"/>
+                    <TextBox x:Name="TtsApiKey" 
+                             Background="#161B22" Foreground="#E6EDF3" BorderBrush="#30363D" 
+                             Padding="12" Margin="0,0,0,15"
+                             ui:ControlHelper.PlaceholderText="API key for text-to-speech"/>
+
+                    <TextBlock Text="Voice ID (ElevenLabs)" Foreground="#E6EDF3" FontWeight="SemiBold" Margin="0,0,0,8"/>
+                    <TextBox x:Name="TtsVoiceId" 
+                             Background="#161B22" Foreground="#E6EDF3" BorderBrush="#30363D" 
+                             Padding="12" Margin="0,0,0,5"
+                             ui:ControlHelper.PlaceholderText="Optional voice ID"/>
+                </StackPanel>
+
+                <!-- Web Browse Configuration -->
+                <StackPanel x:Name="WebBrowseFields" Visibility="Collapsed">
+                    <TextBlock Text="Browser Engine" Foreground="#E6EDF3" FontWeight="SemiBold" Margin="0,0,0,8"/>
+                    <ComboBox x:Name="BrowserEngineCombo"
+                              Background="#161B22" Foreground="#E6EDF3" BorderBrush="#30363D" Padding="10" Margin="0,0,0,15">
+                        <ComboBoxItem Content="Chromium (Recommended)" IsSelected="True" Tag="chromium"/>
+                        <ComboBoxItem Content="Firefox" Tag="firefox"/>
+                        <ComboBoxItem Content="WebKit (Safari)" Tag="webkit"/>
+                    </ComboBox>
+
+                    <CheckBox x:Name="HeadlessCheck" Content="Run Headless (No visible window)" 
+                              Foreground="#E6EDF3" IsChecked="True" Margin="0,0,0,15"/>
+
+                    <TextBlock Text="Timeout (ms)" Foreground="#E6EDF3" FontWeight="SemiBold" Margin="0,0,0,8"/>
+                    <TextBox x:Name="BrowserTimeout" 
+                             Background="#161B22" Foreground="#E6EDF3" BorderBrush="#30363D" 
+                             Padding="12" Margin="0,0,0,5" Text="30000"
+                             ui:ControlHelper.PlaceholderText="30000"/>
+                    <TextBlock Text="Default: 30000ms (30 seconds)" Foreground="#7D8590" FontSize="11" Margin="0,0,0,15"/>
+
+                    <TextBlock Text="User Agent (Optional)" Foreground="#E6EDF3" FontWeight="SemiBold" Margin="0,0,0,8"/>
+                    <TextBox x:Name="BrowserUserAgent" 
+                             Background="#161B22" Foreground="#E6EDF3" BorderBrush="#30363D" 
+                             Padding="12" Margin="0,0,0,5"
+                             ui:ControlHelper.PlaceholderText="Custom user agent string"/>
+                </StackPanel>
+
+            </StackPanel>
+        </ScrollViewer>
+
+        <!-- Buttons -->
+        <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,20,0,0">
+            <Button Content="Cancel" Click="Cancel_Click"
+                    Background="#21262D" Foreground="#C9D1D9" BorderBrush="#30363D" BorderThickness="1"
+                    Padding="20,10" Margin="0,0,10,0" FontWeight="SemiBold"/>
+            <Button x:Name="AddServerBtn" Content="➕ Add Server" Click="AddMcpServer_Click"
+                    Background="#1F6FEB" Foreground="White" BorderThickness="0"
+                    Padding="20,10" Margin="0,0,10,0" FontWeight="SemiBold"/>
+            <Button Content="💾 Save &amp; Restart Gateway" Click="SaveAndRestart_Click"
+                    Background="#238636" Foreground="White" BorderThickness="0"
+                    Padding="20,10" FontWeight="SemiBold"/>
+        </StackPanel>
+    </Grid>
+</Window>

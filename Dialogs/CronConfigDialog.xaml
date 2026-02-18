@@ -1,0 +1,109 @@
+<Window x:Class="OpenClawGUI.Dialogs.CronConfigDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:ui="http://schemas.modernwpf.com/2019"
+        ui:WindowHelper.UseModernWindowStyle="True"
+        Title="Create Scheduled Task" 
+        Height="550" Width="500"
+        WindowStartupLocation="CenterOwner"
+        Background="#0D1117"
+        ResizeMode="NoResize">
+    <Grid Margin="25">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- Header -->
+        <StackPanel Grid.Row="0" Margin="0,0,0,20">
+            <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+                <TextBlock Text="⏰" FontSize="32" Margin="0,0,15,0"/>
+                <StackPanel>
+                    <TextBlock x:Name="DialogTitle" Text="Create Scheduled Task" FontSize="20" FontWeight="Bold" Foreground="#E6EDF3"/>
+                    <TextBlock Text="Set up a recurring task with cron expression" FontSize="12" Foreground="#7D8590"/>
+                </StackPanel>
+            </StackPanel>
+        </StackPanel>
+
+        <!-- Form Fields -->
+        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
+            <StackPanel>
+                <TextBlock Text="Task Name *" Foreground="#E6EDF3" FontWeight="SemiBold" Margin="0,0,0,8"/>
+                <TextBox x:Name="TaskNameInput" 
+                         Background="#161B22" Foreground="#E6EDF3" BorderBrush="#30363D" 
+                         Padding="12" Margin="0,0,0,15"
+                         ui:ControlHelper.PlaceholderText="e.g., Daily Backup"/>
+
+                <TextBlock Text="Description" Foreground="#E6EDF3" FontWeight="SemiBold" Margin="0,0,0,8"/>
+                <TextBox x:Name="TaskDescInput" 
+                         Background="#161B22" Foreground="#E6EDF3" BorderBrush="#30363D" 
+                         Padding="12" Margin="0,0,0,15" Height="60" AcceptsReturn="True" TextWrapping="Wrap"
+                         ui:ControlHelper.PlaceholderText="What does this task do?"/>
+
+                <TextBlock Text="Schedule (Cron Expression) *" Foreground="#E6EDF3" FontWeight="SemiBold" Margin="0,0,0,8"/>
+                <ComboBox x:Name="SchedulePresetCombo" SelectionChanged="SchedulePreset_Changed"
+                          Background="#161B22" Foreground="#E6EDF3" BorderBrush="#30363D" Padding="10" Margin="0,0,0,10">
+                    <ComboBoxItem Content="-- Select preset or enter custom --" IsSelected="True"/>
+                    <ComboBoxItem Content="Every minute" Tag="* * * * *"/>
+                    <ComboBoxItem Content="Every 5 minutes" Tag="*/5 * * * *"/>
+                    <ComboBoxItem Content="Every 15 minutes" Tag="*/15 * * * *"/>
+                    <ComboBoxItem Content="Every hour" Tag="0 * * * *"/>
+                    <ComboBoxItem Content="Every 6 hours" Tag="0 */6 * * *"/>
+                    <ComboBoxItem Content="Daily at midnight" Tag="0 0 * * *"/>
+                    <ComboBoxItem Content="Daily at 9 AM" Tag="0 9 * * *"/>
+                    <ComboBoxItem Content="Weekly (Sunday midnight)" Tag="0 0 * * 0"/>
+                    <ComboBoxItem Content="Monthly (1st at midnight)" Tag="0 0 1 * *"/>
+                    <ComboBoxItem Content="Custom..." Tag="custom"/>
+                </ComboBox>
+                <TextBox x:Name="CronExpressionInput" 
+                         Background="#161B22" Foreground="#E6EDF3" BorderBrush="#30363D" 
+                         Padding="12" Margin="0,0,0,5"
+                         ui:ControlHelper.PlaceholderText="* * * * * (min hour day month weekday)"/>
+                <TextBlock Text="Format: minute hour day-of-month month day-of-week" Foreground="#7D8590" FontSize="11" Margin="0,0,0,15"/>
+
+                <TextBlock Text="Command / Action *" Foreground="#E6EDF3" FontWeight="SemiBold" Margin="0,0,0,8"/>
+                <ComboBox x:Name="ActionTypeCombo"
+                          Background="#161B22" Foreground="#E6EDF3" BorderBrush="#30363D" Padding="10" Margin="0,0,0,10">
+                    <ComboBoxItem Content="Run Agent Task" IsSelected="True" Tag="agent"/>
+                    <ComboBoxItem Content="Execute Shell Command" Tag="shell"/>
+                    <ComboBoxItem Content="HTTP Request" Tag="http"/>
+                    <ComboBoxItem Content="Send Notification" Tag="notify"/>
+                </ComboBox>
+                <TextBox x:Name="ActionInput" 
+                         Background="#161B22" Foreground="#E6EDF3" BorderBrush="#30363D" 
+                         Padding="12" Margin="0,0,0,5" Height="80" AcceptsReturn="True" TextWrapping="Wrap"
+                         ui:ControlHelper.PlaceholderText="Enter the task prompt or command"/>
+                <TextBlock Text="For agent tasks, enter the prompt. For shell, enter the command." Foreground="#7D8590" FontSize="11" Margin="0,0,0,15"/>
+
+                <CheckBox x:Name="EnabledCheck" Content="Enable this task" 
+                          Foreground="#E6EDF3" IsChecked="True" Margin="0,0,0,15"/>
+
+                <!-- Cron Help -->
+                <Border Background="#161B22" BorderBrush="#30363D" BorderThickness="1" CornerRadius="6" Padding="15">
+                    <StackPanel>
+                        <TextBlock Text="📖 Cron Expression Help" Foreground="#58A6FF" FontWeight="SemiBold" Margin="0,0,0,10"/>
+                        <TextBlock Foreground="#7D8590" TextWrapping="Wrap" FontSize="12">
+                            <Run FontFamily="Consolas">┌───────────── minute (0-59)</Run><LineBreak/>
+                            <Run FontFamily="Consolas">│ ┌─────────── hour (0-23)</Run><LineBreak/>
+                            <Run FontFamily="Consolas">│ │ ┌───────── day of month (1-31)</Run><LineBreak/>
+                            <Run FontFamily="Consolas">│ │ │ ┌─────── month (1-12)</Run><LineBreak/>
+                            <Run FontFamily="Consolas">│ │ │ │ ┌───── day of week (0-6, Sun=0)</Run><LineBreak/>
+                            <Run FontFamily="Consolas">* * * * *</Run>
+                        </TextBlock>
+                    </StackPanel>
+                </Border>
+            </StackPanel>
+        </ScrollViewer>
+
+        <!-- Buttons -->
+        <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,20,0,0">
+            <Button Content="Cancel" Click="Cancel_Click"
+                    Background="#21262D" Foreground="#C9D1D9" BorderBrush="#30363D" BorderThickness="1"
+                    Padding="20,10" Margin="0,0,10,0" FontWeight="SemiBold"/>
+            <Button Content="💾 Save Task" Click="Save_Click"
+                    Background="#238636" Foreground="White" BorderThickness="0"
+                    Padding="20,10" FontWeight="SemiBold"/>
+        </StackPanel>
+    </Grid>
+</Window>
