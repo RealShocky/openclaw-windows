@@ -12,6 +12,20 @@
 2. Extract to any folder
 3. Run `OpenClawGUI.exe`
 
+## 📸 Screenshots
+
+### Overview Dashboard
+![Overview](screenshots/overview.png)
+
+### Chat Interface
+![Chat](screenshots/chat.png)
+
+### Skills Configuration
+![Skills](screenshots/skills.png)
+
+### System Tray Menu
+![System Tray](screenshots/tray-menu.png)
+
 ## ✨ Features
 
 ### Core Features
@@ -172,10 +186,9 @@ OpenClawGUI/
 
 ## 🚧 Future Features
 
+- [x] System tray support (v0.6.0)
 - [ ] WebSocket live connection to gateway
 - [ ] Real-time message streaming
-- [ ] Settings dialog
-- [ ] System tray support
 - [ ] Auto-start with Windows
 - [ ] Message history persistence
 - [ ] File attachment support
